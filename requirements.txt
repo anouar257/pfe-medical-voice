@@ -1,0 +1,39 @@
+# ============================================
+# PFE Medical Voice Recognition — Dépendances
+# ============================================
+# ⚠️ VERSIONS CRITIQUES — Ne pas mettre à jour sans tester !
+#    Compatibilité vérifiée le 17 Fév 2026.
+
+# --- PyTorch (CPU) ---
+torch==2.2.0
+torchaudio==2.2.0
+
+# --- Speech-to-Text ---
+openai-whisper
+
+# --- Speaker Diarization ---
+pyannote.audio==3.1.1
+huggingface_hub==0.23.5
+
+# --- Voice Embeddings ---
+resemblyzer
+
+# --- Vector Database ---
+chromadb
+
+# --- NLP & Text Analysis ---
+langdetect
+transformers
+sentencepiece
+
+# --- Audio Processing ---
+soundfile
+librosa
+numpy==1.26.4
+scipy
+
+# --- Génération d'audios de test ---
+gTTS
+
+# --- Utilitaires audio ---
+pydub

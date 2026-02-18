@@ -1,0 +1,47 @@
+# ============================================
+# PFE Medical Voice Recognition — .gitignore
+# ============================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# --- Environnement virtuel ---
+.venv/
+venv/
+env/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Données générées ---
+data/chroma_db/
+*.pt
+*.bin
+
+# --- Modèles IA téléchargés ---
+whisper_models/
+
+# --- Rapports générés ---
+output/rapports/*.json
+
+# --- Fichiers temporaires ---
+*.log
+*.tmp
+
+# --- Gemini ---
+.gemini/

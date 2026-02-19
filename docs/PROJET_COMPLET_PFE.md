@@ -100,6 +100,7 @@
 | `torchaudio` | **2.2.0** | Traitement audio |
 | `numpy` | **1.26.4** | Calculs numériques |
 | `huggingface_hub` | **0.23.5** | Téléchargement modèles IA |
+| `chromadb` | latest | Vector Database (stockage embeddings) |
 | `gTTS` | latest | Génération audio de test |
 | `librosa` | latest | Analyse audio |
 | `langdetect` | latest | Détection de langue |
@@ -120,10 +121,10 @@
 
 ### Base de Données Voix (Vector DB)
 - Une voix → transformée en **vecteur mathématique** (embedding)
-- Ce vecteur est **stocké** dans une base
+- Ce vecteur est **stocké** dans une base vectorielle
 - On **compare** les nouveaux vecteurs pour identifier la personne
-- **Implémentation actuelle** : fichiers `.npy` dans `data/voice_db/`
-- **Futur** : Migration vers une vraie Vector DB (Pinecone, Weaviate, ChromaDB)
+- **Implémentation** : **ChromaDB** (Vector DB open-source) dans `data/chroma_db/`
+- **Module** : `vector_db_manager.py`
 
 ---
 
@@ -206,6 +207,7 @@ TESTPFE/
 │   │   ├── speech_to_text.py      # Module 1 : Whisper (Audio → Texte)
 │   │   ├── speaker_diarization.py # Module 2 : pyannote (Qui parle quand)
 │   │   ├── voice_embeddings.py    # Module 3 : Resemblyzer (Empreintes)
+│   │   ├── vector_db_manager.py   # Module 3b : ChromaDB (Vector DB)
 │   │   └── text_analysis.py       # Module 4 : NLP (Symptômes FR + Darija)
 │   └── utils/                     # 🔧 Utilitaires
 │       ├── __init__.py
@@ -224,10 +226,7 @@ TESTPFE/
 │   │   ├── dialogue_patient_fr.mp3
 │   │   ├── dialogue_docteur_fr.mp3
 │   │   └── dialogue_arabe.mp3
-│   └── voice_db/                  # Base de données empreintes vocales
-│       ├── francais.npy
-│       ├── dialogue_patient.npy
-│       └── dialogue_docteur.npy
+│   └── chroma_db/                 # 💾 Vector DB (ChromaDB) — généré automatiquement
 │
 ├── output/                        # 📊 Sorties
 │   └── rapports/                  # Rapports JSON générés
@@ -282,6 +281,7 @@ $env:HF_TOKEN='VOTRE_TOKEN_HUGGINGFACE'
 | Phase | Points | Statut | Date |
 |-------|--------|--------|------|
 | Sprint 1 (2 jours) | Points 1-4 | ✅ Terminé | 17 Fév 2026 |
+| Sprint 1.5 | ChromaDB Vector DB | ✅ Terminé | 18 Fév 2026 |
 | Sprint 2 | Point 5a (API externes) | 🔜 À faire | — |
 | Sprint 3 | Point 5b (Notre API) | 🔜 À faire | — |
 | Sprint 4 | Point 6 (Résumé/Conclusion) | 🔜 À faire | — |

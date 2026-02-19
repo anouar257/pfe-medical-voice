@@ -132,8 +132,7 @@ TESTPFE/
 │   └── utils/
 │       └── generate_test_audio.py    # Génération d'audios de test
 ├── tests/
-│   ├── demo_simple.py                # Tests unitaires & globaux
-│   └── debug_pyannote.py             # Debug Hugging Face
+│   └── demo_simple.py                # Tests unitaires & globaux
 ├── data/
 │   └── audio/                        # Fichiers MP3 de test
 ├── docs/                             # Documentation

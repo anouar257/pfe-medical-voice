@@ -215,16 +215,14 @@ TESTPFE/
 │
 ├── tests/                         # 🧪 Tests
 │   ├── __init__.py
-│   ├── demo_simple.py             # Tests individuels par module
-│   └── debug_pyannote.py          # Debug Hugging Face / pyannote
+│   └── demo_simple.py             # Tests individuels par module
 │
 ├── data/                          # 💾 Données
 │   ├── audio/                     # Fichiers audio de test
 │   │   ├── test_francais.mp3
 │   │   ├── test_arabe.mp3
 │   │   ├── test_dialogue.mp3
-│   │   ├── dialogue_patient_fr.mp3
-│   │   ├── dialogue_docteur_fr.mp3
+│   │   ├── dialogue_2voix.mp3
 │   │   └── dialogue_arabe.mp3
 │   └── chroma_db/                 # 💾 Vector DB (ChromaDB) — généré automatiquement
 │
@@ -232,7 +230,6 @@ TESTPFE/
 │   └── rapports/                  # Rapports JSON générés
 │
 └── docs/                          # 📖 Documentation
-    ├── GUIDE_TECHNOLOGIES.md      # Guide détaillé des technologies
     └── PROJET_COMPLET_PFE.md      # 📌 CE FICHIER (référence complète)
 ```
 
@@ -241,8 +238,8 @@ TESTPFE/
 ## ⚙️ Configuration Technique
 
 ### Python
-- **Version utilisée** : Python **3.10** (C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe)
-- ⚠️ Python 3.13 aussi installé mais les packages sont sur 3.10
+- **Version requise** : Python **3.10** (obligatoire, pas 3.11/3.12/3.13)
+- Les packages IA (PyTorch, Whisper) ne sont compatibles qu'avec 3.10
 
 ### Commandes pour lancer
 

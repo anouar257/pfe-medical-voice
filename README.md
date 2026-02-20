@@ -52,7 +52,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Installer les dépendances
+### 3. Installer les dépendances (Versions Strictes)
+
+> 🚨 **ATTENTION ÉQUIPE** : Il est **obligatoire** d'utiliser la commande ci-dessous. Le fichier `requirements.txt` contient les versions exactes (ex: `torch==2.2.0`, `pyannote.audio==3.1.1`). **Ne mettez aucun package à jour manuellement** pour garantir que le code fonctionne de la même manière pour nous 4.
+
 ```bash
 pip install -r requirements.txt
 ```

@@ -9,8 +9,7 @@
 1. Charger un fichier audio
 2. Transcrire avec Whisper (Speech-to-Text)
 3. Identifier les locuteurs avec pyannote (si disponible)
-4. Analyser le texte (NLP) : symptômes, urgence, hypothèses
-5. Générer le rapport structuré en 3 parties
+4. Générer le rapport structuré (Transcription + Diarization)
 
 Usage :
   python main.py --audio data/audio/test_dialogue.mp3
@@ -32,14 +31,14 @@ sys.path.insert(0, PROJECT_ROOT)
 from src.config import RAPPORTS_DIR, AUDIO_DIR
 
 
-def run_pipeline(audio_path, language=None, num_speakers=2, whisper_model="base"):
+def run_pipeline(audio_path, language=None, num_speakers=None, whisper_model="medium"):
     """
     Exécute le pipeline complet.
     
     Args:
         audio_path: Chemin vers le fichier audio
         language: Langue forcée ("fr", "ar") ou None pour auto-détection
-        num_speakers: Nombre de locuteurs attendus
+        num_speakers: Nombre de locuteurs attendus (None pour auto-détection)
         whisper_model: Taille du modèle Whisper
     """
     print("="*60)
@@ -130,30 +129,16 @@ def run_pipeline(audio_path, language=None, num_speakers=2, whisper_model="base"
         print(f"\n⏭️ ÉTAPE 3 : Empreinte vocale ignorée (resemblyzer non installé)")
     
     # =============================================
-    # ÉTAPE 4 : ANALYSE DU TEXTE (NLP)
-    # =============================================
-    print(f"\n{'─'*60}")
-    print(f"📌 ÉTAPE 4 : ANALYSE DU TEXTE (NLP)")
-    print(f"{'─'*60}")
-    
-    from src.modules.text_analysis import generate_medical_report
-    
-    report = generate_medical_report(
-        transcription["text"],
-        dialogue=dialogue
-    )
-    
-    # =============================================
     # SAUVEGARDE DU RAPPORT
     # =============================================
-    save_report(audio_path, transcription, report, dialogue)
+    save_report(audio_path, transcription, dialogue)
     
     print(f"\n{'='*60}")
     print(f"  ✅ PIPELINE TERMINÉ AVEC SUCCÈS !")
     print(f"{'='*60}")
 
 
-def save_report(audio_path, transcription, report, dialogue=None):
+def save_report(audio_path, transcription, dialogue=None):
     """
     Sauvegarde le rapport en format JSON.
     """
@@ -168,13 +153,6 @@ def save_report(audio_path, transcription, report, dialogue=None):
         "transcription": {
             "text": transcription["text"],
             "language": transcription["language"],
-        },
-        "analysis": {
-            "langue_detectee": report["langue"],
-            "symptomes": report["symptomes"],
-            "urgence": report["urgence"],
-            "hypotheses": report["hypotheses"],
-            "questions": report["questions"],
         }
     }
     
@@ -196,11 +174,11 @@ def main():
                         help="Chemin vers le fichier audio")
     parser.add_argument("--lang", type=str, default=None,
                         help="Langue : fr, ar, ou auto")
-    parser.add_argument("--speakers", type=int, default=2,
-                        help="Nombre de locuteurs (défaut: 2)")
-    parser.add_argument("--model", type=str, default="base",
+    parser.add_argument("--speakers", type=int, default=None,
+                        help="Nombre de locuteurs (défaut: Auto-détection)")
+    parser.add_argument("--model", type=str, default="medium",
                         choices=["tiny", "base", "small", "medium", "large"],
-                        help="Taille du modèle Whisper (défaut: base)")
+                        help="Taille du modèle Whisper (défaut: medium)")
     
     args = parser.parse_args()
     run_pipeline(args.audio, args.lang, args.speakers, args.model)

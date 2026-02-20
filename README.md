@@ -148,7 +148,6 @@ TESTPFE/
 | **pyannote.audio** | Speaker Diarization |
 | **Resemblyzer** | Empreintes vocales (embeddings) |
 | **ChromaDB** | Vector Database (stockage embeddings) |
-| **NLP Custom** | Analyse médicale (FR + Darija) |
 
 ---
 

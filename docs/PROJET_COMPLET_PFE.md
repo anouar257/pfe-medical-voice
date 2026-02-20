@@ -39,15 +39,6 @@
 - **Statut** : ✅ FAIT ET TESTÉ
 - **Résultat** : SPEAKER_00 et SPEAKER_01 séparés, similarité vocale 97.82%
 
-### ✅ Point 4 — Analyse du texte : Français / Arabe dialecte (Darija marocaine)
-- Détecter les symptômes médicaux dans le texte
-- Supporter le Français ET la Darija marocaine (arabe + phonétique latine)
-- Générer un rapport en 3 parties
-- **Techno utilisée** : NLP custom avec dictionnaires médicaux
-- **Fichier** : `text_analysis.py`
-- **Statut** : ✅ FAIT ET TESTÉ
-- **Résultat** : 6 symptômes détectés, rapport 3 parties généré
-
 ### 🔜 Point 5 — Intégration des API : Symptômes → Diagnostic
 
 #### 5a. Utilisation des API existantes
@@ -126,58 +117,36 @@
 - **Implémentation** : **ChromaDB** (Vector DB open-source) dans `data/chroma_db/`
 - **Module** : `vector_db_manager.py`
 
----
+## 📄 Format du Rapport (JSON)
 
-## 📄 Structure d'une Page (Format du Rapport Médical)
+### Version Actuelle (Moteur Vocal)
 
-### Version : Consultation Docteur / Patient
+#### 1️⃣ Transcription Brillante (Texte Brut)
 
-#### 1️⃣ Dialogue en temps réel (Docteur 🩺 / Patient)
+> **Objectif** : Retranscrire fidèlement l'échange.
 
-> **Objectif** : Retranscrire fidèlement l'échange sans analyse.
+- Conversation naturelle captée par le micro.
+- **Technos** : Whisper (modèle `medium` par défaut).
 
-- Conversation naturelle captée par le micro
-- Symptômes décrits par le patient
-- Questions du médecin
-- Aucune interprétation à ce stade
-- **Technos** : Whisper (transcription) + pyannote (qui parle)
+#### 2️⃣ Dialogue avec Locuteurs (Speaker Diarization)
 
-**Exemple :**
-```
-Patient : J'ai de la fièvre depuis deux jours et je tousse beaucoup.
-Docteur : Avez-vous des douleurs musculaires ou des maux de gorge ?
-Patient : Oui, j'ai mal à la gorge et je me sens très fatigué.
-Docteur : Avez-vous été en contact avec quelqu'un de malade récemment ?
-Patient : Oui, mon collègue avait la grippe.
-```
+> **Objectif** : Identifier mathématiquement les voix.
 
-#### 2️⃣ Résultats du rapport
+- Associe le texte transcrit à une empreinte vocale unique.
+- **Technos** : pyannote.audio + Resemblyzer + ChromaDB.
 
-> **Objectif** : Analyser le dialogue et proposer des hypothèses.
-
-**🔎 Analyse des symptômes** : fièvre, toux, fatigue, mal de gorge
-**📋 Hypothèses possibles** : Grippe, COVID-19, Rhume
-**💡 Propositions médicales** :
-- Test de dépistage si suspicion COVID
-- Repos + hydratation
-- Antipyrétique en cas de forte fièvre
-- Surveillance 48h
-- Consultation urgente si aggravation
-
-> ⚠️ Ce rapport ne remplace PAS un diagnostic médical réel.
-
-#### 3️⃣ Questions proposées par l'IA
-
-> **Objectif** : Aider à affiner le choix ou la décision.
-
-- Depuis combien de jours les symptômes ont-ils commencé ?
-- La fièvre dépasse-t-elle 38,5°C ?
-- Avez-vous des difficultés à respirer ?
-- Êtes-vous vacciné récemment contre la grippe ou le COVID ?
-- Souhaitez-vous consulter immédiatement ou surveiller 24h ?
-
-```
-Résumé : 1. Dialogue réel → 2. Analyse + hypothèses → 3. Questions IA
+**Exemple de résultat automatique :**
+```json
+"dialogue": [
+    {
+      "speaker": "SPEAKER_00",
+      "text": "سبحال خير لا فضيفة كيف تيرا"
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "text": "اللي عيولك شو كنت خدمت لنعبقى"
+    }
+]
 ```
 
 ---
@@ -207,8 +176,7 @@ TESTPFE/
 │   │   ├── speech_to_text.py      # Module 1 : Whisper (Audio → Texte)
 │   │   ├── speaker_diarization.py # Module 2 : pyannote (Qui parle quand)
 │   │   ├── voice_embeddings.py    # Module 3 : Resemblyzer (Empreintes)
-│   │   ├── vector_db_manager.py   # Module 3b : ChromaDB (Vector DB)
-│   │   └── text_analysis.py       # Module 4 : NLP (Symptômes FR + Darija)
+│   │   └── vector_db_manager.py   # Module 3b : ChromaDB (Vector DB)
 │   └── utils/                     # 🔧 Utilitaires
 │       ├── __init__.py
 │       └── generate_test_audio.py # Génération d'audios de test (gTTS)
@@ -256,11 +224,9 @@ $env:HF_TOKEN='VOTRE_TOKEN_HUGGINGFACE'
 # 4. Tester individuellement
 & "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" tests/demo_simple.py --test whisper
 & "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" tests/demo_simple.py --test diarize
-& "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" tests/demo_simple.py --test nlp
-& "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" tests/demo_simple.py --test pipeline
 
-# 5. Pipeline complet
-& "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" main.py --audio data/audio/test_dialogue.mp3
+# 5. Pipeline complet (Détection langue/speakers automatique)
+& "C:\Users\anoua\AppData\Local\Programs\Python\Python310\python.exe" main.py --audio data/audio/testfinalar.mp3
 ```
 
 ### Hugging Face (pour pyannote)

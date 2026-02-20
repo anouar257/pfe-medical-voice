@@ -11,7 +11,6 @@ Usage :
   python tests/demo_simple.py --test whisper    # Tester Speech-to-Text
   python tests/demo_simple.py --test diarize    # Tester Diarization
   python tests/demo_simple.py --test embedding  # Tester Voice Embeddings
-  python tests/demo_simple.py --test nlp        # Tester Text Analysis
   python tests/demo_simple.py --test generate   # Générer les audios de test
 ==========================================================
 """
@@ -48,7 +47,6 @@ def test_imports():
     optional_modules = {
         "pyannote.audio": "pyannote.audio (Speaker Diarization)",
         "resemblyzer": "Resemblyzer (Voice Embeddings)",
-        "transformers": "Transformers (Hugging Face NLP)",
     }
     
     print("\n📦 Modules OBLIGATOIRES :")
@@ -202,36 +200,6 @@ def test_embeddings():
     print("\n✅ Test Embeddings terminé !")
 
 
-def test_nlp():
-    """Teste le module Text Analysis (NLP)."""
-    print("\n" + "="*60)
-    print("  TEST : NLP (Analyse de Texte)")
-    print("="*60)
-    
-    from src.modules.text_analysis import generate_medical_report
-    
-    tests = [
-        ("Français", "J'ai de la fièvre depuis deux jours et je tousse beaucoup. J'ai aussi mal à la gorge et je me sens très fatigué."),
-        ("Darija (arabe)", "عندي سخانة و كحة و كنتنفس بصعوبة و راسي كيوجعني"),
-        ("Darija (latin)", "ana 3yan bzzaf, 3ndi s5ana w ko7a, rasi kayouj3ni w t3ebt"),
-        ("Dialogue", None),
-    ]
-    
-    for name, text in tests:
-        if name == "Dialogue":
-            dialogue = [
-                {"speaker": "PATIENT", "text": "J'ai de la fièvre depuis deux jours et je tousse beaucoup."},
-                {"speaker": "DOCTEUR", "text": "Avez-vous des douleurs musculaires ou des maux de tête ?"},
-                {"speaker": "PATIENT", "text": "Oui, j'ai mal à la gorge et je me sens très fatigué."},
-            ]
-            text = " ".join(d["text"] for d in dialogue)
-            print(f"\n📝 Test : {name}")
-            generate_medical_report(text, dialogue=dialogue)
-        else:
-            print(f"\n📝 Test : {name}")
-            generate_medical_report(text)
-    
-    print("\n✅ Test NLP terminé !")
 
 
 def test_generate():
@@ -240,34 +208,6 @@ def test_generate():
     generate_all_test_audio()
 
 
-def test_pipeline():
-    """Teste le pipeline complet : Audio → Texte → Analyse."""
-    print("\n" + "="*60)
-    print("  TEST : PIPELINE COMPLET")
-    print("="*60)
-    print("  Audio → Whisper → Texte → Analyse → Rapport")
-    print("="*60)
-    
-    audio_file = os.path.join(AUDIO_DIR, "test_dialogue.mp3")
-    if not os.path.exists(audio_file):
-        print("⚠️ Fichier audio manquant, génération...")
-        test_generate()
-    
-    # Étape 1 : Transcrire
-    print("\n📌 ÉTAPE 1 : Transcription (Whisper)")
-    from src.modules.speech_to_text import load_model, transcribe_audio
-    model = load_model("base")
-    result = transcribe_audio(model, audio_file)
-    
-    if result:
-        # Étape 2 : Analyser
-        print("\n📌 ÉTAPE 2 : Analyse du texte (NLP)")
-        from src.modules.text_analysis import generate_medical_report
-        report = generate_medical_report(result["text"])
-        
-        print("\n✅ Pipeline complet terminé !")
-    else:
-        print("❌ La transcription a échoué")
 
 
 def main():
@@ -277,7 +217,7 @@ def main():
     )
     parser.add_argument(
         "--test",
-        choices=["all", "imports", "whisper", "diarize", "embedding", "nlp", "generate", "pipeline"],
+        choices=["all", "imports", "whisper", "diarize", "embedding", "generate"],
         default="imports",
         help="""Quel test exécuter :
   imports   → Vérifier les installations (défaut)
@@ -285,8 +225,6 @@ def main():
   whisper   → Tester Speech-to-Text
   diarize   → Tester Speaker Diarization
   embedding → Tester Voice Embeddings
-  nlp       → Tester Text Analysis
-  pipeline  → Tester le pipeline complet
   all       → Tout tester"""
     )
     
@@ -302,18 +240,13 @@ def main():
         test_diarization()
     elif args.test == "embedding":
         test_embeddings()
-    elif args.test == "nlp":
-        test_nlp()
-    elif args.test == "pipeline":
-        test_pipeline()
     elif args.test == "all":
         ok = test_imports()
         if ok:
             test_generate()
-            test_nlp()
             test_whisper()
+            test_diarization()
             test_embeddings()
-            test_pipeline()
         else:
             print("\n❌ Installe d'abord les modules manquants !")
 

@@ -1,7 +1,5 @@
-# Modules IA : Whisper, pyannote, Resemblyzer, NLP
+# Modules IA : Whisper, pyannote, Resemblyzer
 from .speech_to_text import load_model, transcribe_audio
-from .text_analysis import generate_medical_report, detect_language
-
 # Modules optionnels (nécessitent des tokens/packages supplémentaires)
 try:
     from .speaker_diarization import load_diarization_pipeline, diarize_audio, combine_transcription_diarization

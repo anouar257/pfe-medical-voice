@@ -4,10 +4,9 @@
 
 ## 🎯 Objectif
 
-Transformer un enregistrement audio d'une consultation médicale en un **rapport structuré** contenant :
 - La **transcription** complète (Français, Arabe, Darija)
-- L'**identification** de qui parle (Docteur vs Patient)
-- L'**analyse médicale** : symptômes détectés, niveau d'urgence, hypothèses
+- L'**identification** de qui parle dans l'audio
+- La **création d'empreintes vocales** pour chaque personne
 
 ---
 
@@ -92,7 +91,6 @@ Cela crée des fichiers `.mp3` dans `data/audio/`.
 
 ### Étape 3 : Tester chaque module
 
-```bash
 # Tester le Speech-to-Text (Whisper)
 python tests/demo_simple.py --test whisper
 
@@ -102,9 +100,6 @@ python tests/demo_simple.py --test diarize
 # Tester les Empreintes Vocales (Resemblyzer + ChromaDB)
 python tests/demo_simple.py --test embedding
 
-# Tester l'Analyse de Texte (NLP)
-python tests/demo_simple.py --test nlp
-
 # TOUT tester d'un coup
 python tests/demo_simple.py --test all
 ```
@@ -113,7 +108,7 @@ python tests/demo_simple.py --test all
 ```bash
 python main.py --audio data/audio/test_dialogue.mp3
 ```
-Cela exécute les 4 étapes : **Audio → Transcription → Diarization → Analyse → Rapport JSON**.
+Cela exécute les étapes : **Audio → Transcription → Diarization → Vector DB → Rapport JSON**.
 
 ---
 
@@ -127,8 +122,7 @@ TESTPFE/
 │   │   ├── speech_to_text.py         # Whisper (Audio → Texte)
 │   │   ├── speaker_diarization.py    # pyannote (Qui parle quand)
 │   │   ├── voice_embeddings.py       # Resemblyzer (Empreintes vocales)
-│   │   ├── vector_db_manager.py      # ChromaDB (Vector Database)
-│   │   └── text_analysis.py          # NLP (Symptômes FR + Darija)
+│   │   └── vector_db_manager.py      # ChromaDB (Vector Database)
 │   └── utils/
 │       └── generate_test_audio.py    # Génération d'audios de test
 ├── tests/
